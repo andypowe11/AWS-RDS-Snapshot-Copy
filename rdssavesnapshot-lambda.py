@@ -12,10 +12,6 @@ import re
 # AWS region in which the database instances exist
 REGION = "eu-west-1"
 
-# The ARN of an SNS topic used to announce availability of the
-# shared manual snapshot copy
-SNS = "arn:aws:sns:eu-west-1:012345678901:rds-copy-snapshots"
-
 # Snapshot retention period in days
 RETENTION = 31
 
