@@ -32,12 +32,10 @@ The following variables should be configured before use:
 ### rdscopysnapshot.py
 | Variable | Description |
 |----------|-------------|
-| INSTANCES | A list of RDS instance identifiers for which snapshot copies are to be taken,
-e.g. ["db-name1", "db-name2"] |
+| INSTANCES | A list of RDS instance identifiers for which snapshot copies are to be taken, e.g. ["db-name1", "db-name2"] |
 | REGION | The AWS region in which the RDS instances exist, e.g. "eu-west-1" |
 | SHAREWITH | The Failsafe account with which snapshots will be shared, e.g. "012345678901" |
-| SNSARN | The SNS topic ARN used to announce availability of the manual snapshot copy,
-e.g.  "arn:aws:sns:eu-west-1:012345678901:rds-copy-snapshots" |
+| SNSARN | The SNS topic ARN used to announce availability of the manual snapshot copy, e.g.  "arn:aws:sns:eu-west-1:012345678901:rds-copy-snapshots" |
 ### rdssavesnapshot.py
 | Variable | Description |
 |----------|-------------|
