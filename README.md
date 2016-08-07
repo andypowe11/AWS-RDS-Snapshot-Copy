@@ -9,12 +9,12 @@ However, there are other kinds of 'disasters' including the accidental or wilful
 by people who have legitimate access to an AWS account.
 
 This kind of 'disaster' can be mitigated by saving copies of key resources - AMIs, CloudFormation templates,
-encryption keys and instance & RDS snapshots in a second 'failsafe' account to which there is limited
-and carefully controlled access. Such control could be maintained by splitting the password and the MFS device across
+encryption keys and instance & RDS snapshots - to a second 'failsafe' account to which there is limited
+and carefully controlled access. Such control could be maintained by splitting the password and the MFA device across
 multiple members of staff, requiring two to be present for any access to be possible.
 
-The Lambda functions here provide a way of taking a daily copy of the automated snapshots from
-one or more RDS instances from a Live account to a Failsafe account and can be used as part
+The Lambda functions provided here offer a way of taking a daily copy of the most recent automated snapshots from
+one or more RDS instances in a Live account to a Failsafe account and can be used as part
 of the above strategy.
 ## Overview
 Two Lambda python functions are provided.
@@ -42,10 +42,25 @@ The following variables should be configured before use:
 | REGION | The AWS region in which the database instances exist, e.g.  "eu-west-1" |
 | RETENTION | The snapshot retention period in days, e.g. 31 |
 ## Usage
-Note on timeouts
+Configure the Lambda functions as described above.
+
+In the Live account, create a new IAM Role using the rdscopysnapshots-role-policy.json JSON role policy.
+Create a new Lambda function using  rdscopysnapshoy.py and trigger it using a daily CloudWatch event.
+Associate the new Role with the new Lambda function.
+Note that It is safe to test the new function multiple times.
+
+In the Failsafe account, create a new IAM Role using the rdssavesnapshot-role-policy.json JSON role policy.
+Create a new Lambda function using rdssavesnapshot.py and trigger it from SNS using the topic configured above.
+Associate the new Role with the new Lambda function.
+
+In both cases, the new Lambda functions wait while the snapshot copies are created. This can take several minutes. Set
+the timeout on the new Failsafe Lambda function to 5 minutes. Set the timeout on the new Live Lambda function
+to at least the same amount - possibly longer if you have configured multiple RDS instances.
 ## Encryption
+These functions have been tested with unencrypted RDS instances. They should work with encrypted RDS instances as well.
+However, you will need to share the RDS encryption key from the Live account to the Failsafe account prior to use,
+as described at http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ShareSnapshot.html.
 ## Acknowledgements
-Much of the initial thinking for these functions came from my ex-colleague (now working for AWS)
-Matt Johnson (mhj@amazon.com).
+Much of the initial thinking for these functions came from Matt Johnson (mhj@amazon.com).
 
 The functions themselves are partly based on the function at https://github.com/xombiemp/rds-copy-snapshots-lambda.
